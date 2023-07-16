@@ -5,10 +5,11 @@ project("scan_detector")
 include_directories(include)
 
 add_definitions(-std=c++17)
-set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall -pthread")
+set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall")
 
 set(sources
    src/Collector.cpp
+   src/CollectorUtils.cpp
    )
 
 add_executable(scan_detector main.cpp ${sources})

@@ -1,9 +1,8 @@
-#include <iostream>
-
-using namespace std;
+#include "Collector.h"
 
 int main(int argc, char* argv[])
 {
-    cout << "Hello World\n";
+    auto detector = scan_detector::Collector{};
+    detector.run();
     return 0;
 }
