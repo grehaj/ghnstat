@@ -1,8 +1,9 @@
-#include "Collector.h"
+#include "DetectorEngine.h"
 
 int main(int argc, char* argv[])
 {
-    auto detector = scan_detector::Collector{};
+    // TODO run app not engine
+    auto detector = scan_detector::DetectorEngine{};
     detector.run();
     return 0;
 }

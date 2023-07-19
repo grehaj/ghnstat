@@ -1,4 +1,4 @@
-#include "CollectorUtils.h"
+#include "Utils.h"
 #include "Exceptions.h"
 #include <algorithm>
 #include <cstdio>
@@ -109,21 +109,5 @@ std::vector<std::string> get_active_interfaces_ip()
     return active_interfaces_ip;
 }
 
-//class DataValidator
-//{
-//private:
-//    static const inline std::map<TransportProtocol, std::regex> pattern{
-//        {TransportProtocol::TCP, std::regex r{R"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d+\s>\s+\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d+: UDP)"}},
-//        {TransportProtocol::TCP, std::regex r{R"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d+\s>\s+\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d+: Flags)"}},
-//    }
-//}
-//
-//enum class Protocol
-//{
-//    ARP,
-//    ICMP,
-//    TCP,
-//    UDP
-//};
 }
 }

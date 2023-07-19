@@ -1,8 +1,11 @@
 #pragma once
 
+#include <queue>
+#include <string>
+
 namespace scan_detector
 {
-class Collector
+class DetectorEngine
 {
 public:
     void run();

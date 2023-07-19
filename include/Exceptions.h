@@ -15,6 +15,14 @@ public:
     }
 };
 
+class DetectorError : public std::runtime_error
+{
+public:
+    DetectorError(const std::string& msg) : std::runtime_error{msg}
+    {
+    }
+};
+
 class SystemCommandError : public std::runtime_error
 {
 public:
