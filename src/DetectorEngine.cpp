@@ -4,6 +4,7 @@
 #include "TrafficStorage.h"
 #include "Utils.h"
 #include <regex>
+#include <ctime>
 
 #include <iostream>
 
@@ -16,20 +17,22 @@ void DetectorEngine::run()
 //    if(ips.size() != 1)
 //        throw error::DetectorError{"Single active network interface required."};
 
-    utils::SystemCommand cmd{std::string{"tcpdump -n dst "} + ips[0]};
+    utils::SystemCommand cmd{std::string{"tcpdump -n -tt dst "} + ips[0]};
     std::optional<std::string> s;
-    TrafficStorage traffic_storage;
+    // currently only per second monitoring
+    TrafficStorage traffic_storage{60};
 
     std::regex r{R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+)\s>\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+))"};
     std::smatch sm;
-    // Alarm thread and notify when get anomaly
+    // Alarm thread and notify when anomaly detected
     while ((s = cmd.get_next_output_line()).has_value())
     {
         if(std::regex_search(*s, sm, r))
         {
-            const auto d = TrafficData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
-            traffic_storage.update(d);
-            std::cout << sm[1] << std::endl;
+            auto d = TrafficData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
+            auto end_pos = s->find(".");
+            time_t tmime_stamp = std::stoull(s->substr(0, end_pos));
+            traffic_storage.update(tmime_stamp, d);
         }
     }
 }
