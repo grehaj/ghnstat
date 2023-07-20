@@ -10,17 +10,19 @@
 
 namespace scan_detector
 {
-void DetectorEngine::run()
+
+DetectorEngine::DetectorEngine(const char* ifc, int sec): interface{ifc}, seconds{sec}
 {
     const auto ips{utils::get_active_interfaces_ip()};
-//     TODO handle no if and more ifaces
-//    if(ips.size() != 1)
-//        throw error::DetectorError{"Single active network interface required."};
+    if(ips.find(interface) == ips.end())
+        throw error::UsageError{"Unable to find interface " + interface + "."};
+}
 
-    utils::SystemCommand cmd{std::string{"tcpdump -n -tt dst "} + ips[0]};
+void DetectorEngine::run()
+{
+    utils::SystemCommand cmd{std::string{"tcpdump -n -tt dst "} + interface};
     std::optional<std::string> s;
-    // currently only per second monitoring
-    TrafficStorage traffic_storage{60};
+    TrafficStorage traffic_storage(seconds);
 
     std::regex r{R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+)\s>\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+))"};
     std::smatch sm;

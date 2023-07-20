@@ -11,6 +11,7 @@ set(sources
    src/DetectorEngine.cpp
    src/TrafficData.cpp
    src/TrafficStorage.cpp
+   src/ScanDetector.cpp
    src/Utils.cpp
    )
 

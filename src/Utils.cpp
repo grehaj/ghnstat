@@ -89,12 +89,11 @@ std::optional<std::string> SystemCommand::get_next_output_line()
     return {};
 }
 
-std::vector<std::string> get_active_interfaces_ip()
+std::map<std::string, std::string> get_active_interfaces_ip()
 {
     SystemCommand cmd{"ip -4 addr show scope global"};
-
     std::regex r{R"(inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))"};
-    std::vector<std::string> active_interfaces_ip;
+    std::map<std::string, std::string> active_interfaces_ip;
     std::optional<std::string> s;
 
     while ((s = cmd.get_next_output_line()).has_value())
@@ -102,7 +101,9 @@ std::vector<std::string> get_active_interfaces_ip()
         std::smatch smtch;
         if(std::regex_search(*s, smtch, r))
         {
-            active_interfaces_ip.push_back(smtch[1]);
+            auto start = s->find_last_of(" ") + 1;
+            auto ifc_name = s->substr(start);
+            active_interfaces_ip[ifc_name] = smtch[1];
         }
     }
 

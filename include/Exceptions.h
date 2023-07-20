@@ -31,6 +31,14 @@ public:
     }
 };
 
+class UsageError : public std::invalid_argument
+{
+public:
+    UsageError(const std::string& msg) : std::invalid_argument{msg}
+    {
+    }
+};
+
 }
 }
 

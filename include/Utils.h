@@ -1,8 +1,8 @@
 #pragma once
 
 #include <optional>
+#include <map>
 #include <string>
-#include <vector>
 
 namespace scan_detector
 {
@@ -28,7 +28,7 @@ public:
     std::optional<std::string> get_next_output_line();
 };
 
-std::vector<std::string> get_active_interfaces_ip();
+std::map<std::string, std::string> get_active_interfaces_ip();
 
 }
 }
