@@ -1,7 +1,5 @@
 #include "TrafficStorage.h"
 
-#include <iomanip>
-
 namespace scan_detector
 {
 
@@ -9,32 +7,41 @@ TrafficStorage::TrafficStorage(size_type s) : max_secs{s}
 {
 }
 
-void TrafficStorage::update(time_t t, const TrafficData& data)
+void TrafficStorage::update(time_t observation_time, const ProtocolData& data)
 {
-    ++per_port_trafic[t][data.dst.port];
-    if(per_port_trafic.size() > max_secs)
+    if(traffic.empty())
     {
-        per_port_trafic.erase(per_port_trafic.begin());
+        traffic.push_back(PortTraffic{observation_time});
+    }
+
+    const auto& old_back = traffic.back();
+    if(old_back.observation_time < observation_time)
+    {
+        for(auto t = old_back.observation_time + 1; t <= observation_time; ++t)
+            traffic.push_back(PortTraffic{t});
+    }
+
+    auto& new_back = traffic.back();
+    new_back += data;
+
+    while(traffic.size() > max_secs)
+    {
+        traffic.pop_front();
     }
 }
 
 bool TrafficStorage::is_full() const
 {
-    return per_port_trafic.size() == max_secs;
+    return traffic.size() == max_secs;
 }
 
 std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts)
 {
-    for(const auto& [t, d] : ts.per_port_trafic)
+    for(const auto& d : ts.traffic)
     {
-        auto loct{std::localtime(&t)};
-        out << "Time: " << std::put_time(loct, "%c") << std::endl;
-        for(const auto& [port, count] : d)
-        {
-            out << "port: " << port << " accessed " << count << " times." << std::endl;
-        }
-        out << std::string(20, '-');
+        out << d << std::endl;
     }
+    out << "******************************************************\n";
     return out;
 }
 

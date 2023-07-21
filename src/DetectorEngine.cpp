@@ -33,13 +33,12 @@ void DetectorEngine::run()
     {
         if(std::regex_search(*s, sm, r))
         {
-            auto d = TrafficData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
+            auto d = ProtocolData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
             auto end_pos = s->find(".");
             time_t tmime_stamp = std::stoull(s->substr(0, end_pos));
             traffic_storage.update(tmime_stamp, d);
             // TODO remove this
-            if(traffic_storage.is_full())
-                std::cout << traffic_storage << std::endl;
+            std::cout << traffic_storage << std::endl;
         }
     }
 }

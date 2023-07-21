@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) try
 {
 //    TODO Parsing and error handling
 //    scan_detector::detect_scan(argv[1], argv[2]);
-    scan_detector::detect_scan("wlp2s0", 60);
+    scan_detector::detect_scan("wlp2s0", 10);
 
     std::exit(EXIT_SUCCESS);
 }
