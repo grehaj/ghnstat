@@ -18,9 +18,7 @@ private:
 
 public:
     explicit TrafficStorage(size_type s);
-
-    void update(time_t t, const ProtocolData& data);
-    bool is_full() const;
+    const PortTraffic& update(time_t t, const ProtocolData& data);
 
     friend std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts);
 };

@@ -2,6 +2,7 @@
 #include "Exceptions.h"
 #include "TrafficData.h"
 #include "TrafficStorage.h"
+#include "TrafficValidator.h"
 #include "Utils.h"
 #include <regex>
 #include <ctime>
@@ -36,9 +37,8 @@ void DetectorEngine::run()
             auto d = ProtocolData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
             auto end_pos = s->find(".");
             time_t tmime_stamp = std::stoull(s->substr(0, end_pos));
-            traffic_storage.update(tmime_stamp, d);
-            // TODO remove this
-            std::cout << traffic_storage << std::endl;
+            const auto& latest_data = traffic_storage.update(tmime_stamp, d);
+            validate(latest_data);
         }
     }
 }

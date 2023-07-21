@@ -7,7 +7,7 @@ TrafficStorage::TrafficStorage(size_type s) : max_secs{s}
 {
 }
 
-void TrafficStorage::update(time_t observation_time, const ProtocolData& data)
+const PortTraffic& TrafficStorage::update(time_t observation_time, const ProtocolData& data)
 {
     if(traffic.empty())
     {
@@ -28,11 +28,8 @@ void TrafficStorage::update(time_t observation_time, const ProtocolData& data)
     {
         traffic.pop_front();
     }
-}
 
-bool TrafficStorage::is_full() const
-{
-    return traffic.size() == max_secs;
+    return traffic.back();
 }
 
 std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts)
