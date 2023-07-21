@@ -11,11 +11,13 @@
 namespace scan_detector
 {
 
-DetectorEngine::DetectorEngine(const char* ifc, int sec): interface{ifc}, seconds{sec}
+DetectorEngine::DetectorEngine(const char* ifc, int sec): interface{}, seconds{sec}
 {
-    const auto ips{utils::get_active_interfaces_ip()};
-    if(ips.find(interface) == ips.end())
-        throw error::UsageError{"Unable to find interface " + interface + "."};
+    auto ifcs{utils::get_active_interfaces_ip()};
+    if(ifcs.find(ifc) == ifcs.end())
+        throw error::UsageError{"Unable to find interface '" + interface + "'."};
+
+    interface = ifcs[std::string{ifc}];
 }
 
 void DetectorEngine::run()
@@ -35,6 +37,9 @@ void DetectorEngine::run()
             auto end_pos = s->find(".");
             time_t tmime_stamp = std::stoull(s->substr(0, end_pos));
             traffic_storage.update(tmime_stamp, d);
+            // TODO remove this
+            if(traffic_storage.is_full())
+                std::cout << traffic_storage << std::endl;
         }
     }
 }

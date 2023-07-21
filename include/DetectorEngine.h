@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <string>
 
 namespace scan_detector
@@ -11,7 +12,7 @@ public:
     void run();
 
 private:
-    const std::string interface;
+    std::string interface;
     int seconds;
 };
 }

@@ -91,7 +91,7 @@ std::optional<std::string> SystemCommand::get_next_output_line()
 
 std::map<std::string, std::string> get_active_interfaces_ip()
 {
-    SystemCommand cmd{"ip -4 addr show scope global"};
+    SystemCommand cmd{"ip -4 addr"};
     std::regex r{R"(inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))"};
     std::map<std::string, std::string> active_interfaces_ip;
     std::optional<std::string> s;
@@ -103,6 +103,8 @@ std::map<std::string, std::string> get_active_interfaces_ip()
         {
             auto start = s->find_last_of(" ") + 1;
             auto ifc_name = s->substr(start);
+            if(ifc_name.back() == '\n')
+                ifc_name.erase(ifc_name.size() - 1);
             active_interfaces_ip[ifc_name] = smtch[1];
         }
     }
