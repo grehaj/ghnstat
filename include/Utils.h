@@ -9,26 +9,13 @@ namespace scan_detector
 namespace utils
 {
 
-class SystemCommand
-{
-private:
-    std::FILE* f{};
-    pid_t pid = -1;
-
-    void exec(const std::string& cmd) const;
-
-public:
-    SystemCommand(const std::string& cmd);
-    SystemCommand(const SystemCommand&) = delete;
-    SystemCommand& operator=(const SystemCommand&) = delete;
-    SystemCommand(SystemCommand&&) = delete;
-    SystemCommand& operator=(SystemCommand&&) = delete;
-    ~SystemCommand();
-
-    std::optional<std::string> get_next_output_line();
-};
+constexpr int RSIZE{1024};
 
 std::map<std::string, std::string> get_active_interfaces_ip();
 
+uint32_t str_to_ip(const std::string&);
+std::string ip_to_str(uint32_t);
+uint16_t str_to_port(const std::string&);
+std::string port_to_str(uint16_t);
 }
 }

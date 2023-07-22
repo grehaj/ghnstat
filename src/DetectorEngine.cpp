@@ -12,6 +12,8 @@
 namespace scan_detector
 {
 
+using namespace utils;
+
 DetectorEngine::DetectorEngine(const char* ifc, int sec): interface{}, seconds{sec}
 {
     auto ifcs{utils::get_active_interfaces_ip()};
@@ -23,24 +25,28 @@ DetectorEngine::DetectorEngine(const char* ifc, int sec): interface{}, seconds{s
 
 void DetectorEngine::run()
 {
-    utils::SystemCommand cmd{std::string{"tcpdump -n -tt dst "} + interface};
-    std::optional<std::string> s;
-    TrafficStorage traffic_storage(seconds);
+    const std::string tcp_dump_command = std::string{"tcpdump -n -tt dst "} + interface;
+    FILE* f = popen(tcp_dump_command.c_str(), "r");
+    if(f == nullptr)
+        throw error::SystemCommandError{"SystemCommand: popen - tcpdump"};
 
+    TrafficStorage traffic_storage(seconds);
     std::regex r{R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+)\s>\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+))"};
     std::smatch sm;
-    // Alarm thread and notify when anomaly detected
-    while ((s = cmd.get_next_output_line()).has_value())
+    char buffer[utils::RSIZE]{};
+    while (fgets(buffer, utils::RSIZE, f))
     {
-        if(std::regex_search(*s, sm, r))
+        std::string s{buffer};
+        if(std::regex_search(s, sm, r))
         {
             auto d = ProtocolData{{str_to_ip(sm[1]), str_to_port(sm[2])}, {str_to_ip(sm[3]), str_to_port(sm[4])}};
-            auto end_pos = s->find(".");
-            time_t tmime_stamp = std::stoull(s->substr(0, end_pos));
+            auto end_pos = s.find(".");
+            time_t tmime_stamp = std::stoull(s.substr(0, end_pos));
             const auto& latest_data = traffic_storage.update(tmime_stamp, d);
             validate(latest_data);
         }
     }
+    pclose(f);
 }
 
 }
