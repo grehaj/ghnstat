@@ -3,7 +3,7 @@
 
 #include <iomanip>
 
-namespace scan_detector
+namespace collector
 {
 
 bool Socket::operator<(const Socket& r) const

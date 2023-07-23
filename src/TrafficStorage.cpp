@@ -1,14 +1,15 @@
 #include "TrafficStorage.h"
 
-namespace scan_detector
+namespace collector
 {
 
 TrafficStorage::TrafficStorage(size_type s) : max_secs{s}
 {
 }
 
-const PortTraffic& TrafficStorage::update(time_t observation_time, const ProtocolData& data)
+bool TrafficStorage::update(time_t observation_time, const ProtocolData& data)
 {
+    bool is_new_second{false};
     if(traffic.empty())
     {
         traffic.push_back(PortTraffic{observation_time});
@@ -18,7 +19,10 @@ const PortTraffic& TrafficStorage::update(time_t observation_time, const Protoco
     if(old_back.observation_time < observation_time)
     {
         for(auto t = old_back.observation_time + 1; t <= observation_time; ++t)
+        {
             traffic.push_back(PortTraffic{t});
+            is_new_second = true;
+        }
     }
 
     auto& new_back = traffic.back();
@@ -29,7 +33,7 @@ const PortTraffic& TrafficStorage::update(time_t observation_time, const Protoco
         traffic.pop_front();
     }
 
-    return traffic.back();
+    return is_new_second;
 }
 
 std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts)

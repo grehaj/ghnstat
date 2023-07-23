@@ -15,7 +15,7 @@
 #include <cstring>
 #include <cerrno>
 
-namespace scan_detector
+namespace collector
 {
 namespace utils
 {

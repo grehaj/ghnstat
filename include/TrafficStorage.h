@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <deque>
 
-namespace scan_detector
+namespace collector
 {
 
 class TrafficStorage
@@ -18,7 +18,16 @@ private:
 
 public:
     explicit TrafficStorage(size_type s);
-    const PortTraffic& update(time_t t, const ProtocolData& data);
+
+    bool update(time_t t, const ProtocolData& data);
+    size_type size() const
+    {
+        return traffic.size();
+    }
+    void clear()
+    {
+        return traffic.clear();
+    }
 
     friend std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts);
 };
