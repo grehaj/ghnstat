@@ -1,6 +1,7 @@
 #pragma once
 
-#include <mutex>
+#include <TrafficValidator.h>
+#include <memory>
 #include <string>
 
 namespace scan_detector
@@ -14,5 +15,7 @@ public:
 private:
     std::string interface;
     int seconds;
+
+    std::unique_ptr<validation::Validator> traffic_validator{validation::create_traffic_validaor()};
 };
 }

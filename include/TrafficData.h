@@ -13,6 +13,13 @@ using port_t = uint16_t;
 using ip_t = uint32_t;
 using counter_t = uint64_t;
 
+enum class TrafficStatus
+{
+    ok,
+    nok_single_src_port_scan,
+    nok_distributed_port_scan
+};
+
 struct Socket
 {
     ip_t ip;

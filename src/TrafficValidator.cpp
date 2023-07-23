@@ -2,30 +2,70 @@
 
 #include <chrono>
 #include <future>
-#include <iostream>
+
+#include <set>
 #include <string>
 #include <sstream>
-#include <thread>
 
 namespace scan_detector
 {
 
-using namespace std::chrono_literals;
-
-static void alarm(std::string msg)
+namespace validation
 {
-    std::this_thread::sleep_for(10s);
-    std::cout << "*************************ALARM******************************\n" << msg << std::endl;
-    //TODO write data via a socket to the server
+void Validator::add_validation(std::unique_ptr<Validator>)
+{
 }
 
-void validate(const PortTraffic& td)
+TrafficStatus ScanValidator::validate(const PortTraffic& pt) const
 {
-    std::ostringstream buffer;
-    buffer << td;
-    if(td.total_count > 100)
+    if(pt.total_count >= max_port_threshold)
     {
-        alarm(buffer.str());
+        std::set<ip_t> src_hosts;
+
+        for(const auto& [_, src_socket_data] : pt.amount_per_dest_port)
+        {
+            for(const auto& [source_socket, _] : src_socket_data.per_socket_count)
+            {
+                src_hosts.insert(source_socket.ip);
+            }
+        }
+
+        if(src_hosts.size() >= distributed_port_scan_threshold)
+            return TrafficStatus::nok_distributed_port_scan;
+        else
+            return TrafficStatus::nok_single_src_port_scan;
     }
+    return TrafficStatus::ok;
+}
+
+void TrafficValidator::add_validation(std::unique_ptr<Validator> v)
+{
+    validators.push_back(std::move(v));
+}
+
+TrafficStatus TrafficValidator::validate(const PortTraffic& td) const
+{
+    for(const auto& validator : validators)
+    {
+        const auto status = validator->validate(td);
+        if(status != TrafficStatus::ok)
+        {
+            std::ostringstream buffer;
+            buffer << td;
+            alarm.send(status, buffer.str());
+        }
+    }
+    return TrafficStatus::ok;
+}
+
+std::unique_ptr<Validator> create_traffic_validaor()
+{
+    std::unique_ptr<Validator> validator = std::make_unique<TrafficValidator>();
+
+    validator->add_validation(std::make_unique<ScanValidator>());
+    // Add other validations here
+
+    return validator;
+}
 }
 }

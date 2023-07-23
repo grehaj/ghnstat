@@ -43,7 +43,7 @@ void DetectorEngine::run()
             auto end_pos = s.find(".");
             time_t tmime_stamp = std::stoull(s.substr(0, end_pos));
             const auto& latest_data = traffic_storage.update(tmime_stamp, d);
-            validate(latest_data);
+            traffic_validator->validate(latest_data);
         }
     }
     pclose(f);
