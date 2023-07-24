@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project("tcpscan")
+project("tcpstat")
 
 include_directories(include)
 
@@ -10,10 +10,12 @@ set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall")
 set(sources
    src/Collector.cpp
    src/TrafficData.cpp
+   src/TrafficReader.cpp
    src/TrafficStorage.cpp
+   src/TrafficWritter.cpp
    src/Utils.cpp
    )
 
-add_executable(tcpscan main.cpp ${sources})
+add_executable(tcpstat main.cpp ${sources})
 
 
