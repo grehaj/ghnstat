@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <deque>
 
+#include <jsoncpp/json/json.h>
+
 namespace collector
 {
 

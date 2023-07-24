@@ -5,7 +5,7 @@ project("tcpstat")
 include_directories(include)
 
 add_definitions(-std=c++17)
-set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall")
+set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall -ljsoncpp")
 
 set(sources
    src/Collector.cpp

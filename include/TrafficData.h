@@ -6,12 +6,12 @@
 #include <string>
 #include <ostream>
 
+#include "Utils.h"
+
 namespace collector
 {
 
-using port_t = uint16_t;
-using ip_t = uint32_t;
-using counter_t = uint64_t;
+using namespace utils;
 
 struct Socket
 {

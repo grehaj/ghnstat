@@ -11,14 +11,12 @@
 namespace collector
 {
 
-const std::string stats_dir{"/tmp/tcpstat_logs"};
-
 class TrafficWritter
 {
 public:
     TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv);
 
-    void operator()(unsigned sec, utils::file_count_t nxt);
+    void operator()(unsigned sec);
 
 private:
     TrafficStorage& traffic_storage;

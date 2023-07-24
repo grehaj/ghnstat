@@ -14,14 +14,10 @@ TrafficWritter::TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition
 {
 }
 
-void TrafficWritter::operator()(unsigned sec, utils::file_count_t nxt)
+void TrafficWritter::operator()(unsigned sec)
 {
-    fs::path file_path = fs::path{stats_dir} / ("stats" + std::to_string(nxt));
-
-    {
-        std::ofstream out{file_path.string()};
-        out << "**********************************************************\n";
-    }
+    const fs::path file_path = fs::path{utils::DEFAULT_LOG_LOCATION};
+    const fs::path file_path_json = fs::path{utils::DEFAULT_LOG_LOCATION + ".json"};
     while(true)
     {
         std::unique_lock<std::mutex> ul{storage_mtx};
@@ -29,15 +25,9 @@ void TrafficWritter::operator()(unsigned sec, utils::file_count_t nxt)
         std::ofstream out{file_path.string(), std::ios::app};
         out << traffic_storage;
         traffic_storage.clear();
-        if(fs::file_size(file_path) > 1000000)
+        if(fs::file_size(file_path) > utils::DEFAULT_FILE_MAX_SIZE)
         {
-            out.close();
-            ++nxt;
-            if(nxt > 3)
-                nxt = 1;
-            file_path = fs::path{stats_dir} / ("stats" + std::to_string(nxt));
-            std::ofstream out{file_path.string()};
-            out << "**********************************************************\n";
+            break;
         }
     }
 }

@@ -42,55 +42,25 @@ void Collector::run()
         throw error::SystemCommandError{"SystemCommand: popen - tcpdump"};
 
     prepare_filesystem();
-    run_collector_threads(get_next_file_number());
+    run_collector_threads();
 }
 
 void Collector::prepare_filesystem() const
 {
-    const fs::path p{stats_dir};
-    if(not fs::exists(p))
-        fs::create_directory(p);
-    else
+    const fs::path p{utils::DEFAULT_LOG_LOCATION};
+    if(fs::exists(p))
     {
-        if(not fs::is_directory(p))
-            error::UsageError{stats_dir + " already exists and is not a directory"};
+        if(not fs::is_regular_file(p))
+            error::UsageError{p.string() + " exists but it is not a regular file."};
     }
 }
 
-file_count_t Collector::get_next_file_number() const
-{
-    const fs::path p{stats_dir};
-    std::set<file_count_t> file_numbers;
-    std::regex r{R"(stats(\d+))"};
-    std::smatch sm;
-    for(const fs::directory_entry& e : fs::directory_iterator{p})
-    {
-        if(fs::is_regular_file(e))
-        {
-            const std::string file_name = e.path().filename().string();
-            if (std::regex_match(file_name, sm, r))
-            {
-                file_numbers.insert(std::stoull(sm[1]));
-            }
-        }
-    }
-
-    if(file_numbers.empty())
-        return 1;
-
-    const auto num = *file_numbers.rbegin();
-    if(num == 0 or num >= 3)
-        return 1;
-
-    return num + 1;
-}
-
-void Collector::run_collector_threads(file_count_t next_file_number)
+void Collector::run_collector_threads()
 {
     std::mutex storage_mutex;
     std::condition_variable ready_to_write;
     std::thread reader{TrafficReader{f, traffic_storage, storage_mutex, ready_to_write}, max_sec};
-    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write}, max_sec, next_file_number};
+    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write}, max_sec};
     reader.join();
     writter.join();
 }

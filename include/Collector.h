@@ -15,8 +15,7 @@ public:
 
 private:
     void prepare_filesystem() const;
-    utils::file_count_t get_next_file_number() const;
-    void run_collector_threads(utils::file_count_t next_file_number);
+    void run_collector_threads();
 
     std::string interface;
     std::string ip;

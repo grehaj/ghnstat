@@ -48,7 +48,7 @@ std::map<std::string, std::string> get_active_interfaces_ip()
     return active_interfaces_ip;
 }
 
-uint32_t str_to_ip(const std::string& ip)
+ip_t str_to_ip(const std::string& ip)
 {
     in_addr add;
 
@@ -57,7 +57,7 @@ uint32_t str_to_ip(const std::string& ip)
     return add.s_addr;
 }
 
-std::string ip_to_str(uint32_t ip)
+std::string ip_to_str(ip_t ip)
 {
     in_addr add{ip};
     char str[INET_ADDRSTRLEN];
@@ -66,11 +66,11 @@ std::string ip_to_str(uint32_t ip)
     return std::string(str);
 }
 
-uint16_t str_to_port(const std::string& port)
+port_t str_to_port(const std::string& port)
 {
     return std::stoi(port.c_str());
 }
-std::string port_to_str(uint16_t port)
+std::string port_to_str(port_t port)
 {
     return std::to_string(port);
 }
