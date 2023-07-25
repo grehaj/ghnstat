@@ -2,23 +2,35 @@
 #include "Exceptions.h"
 #include <algorithm>
 #include <arpa/inet.h>
-#include <cstdio>
+#include <iomanip>
 #include <iterator>
 #include <map>
 #include <regex>
 #include <string>
 #include <sstream>
-#include <vector>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
-#include <cstring>
-#include <cerrno>
 
 namespace collector
 {
 namespace utils
 {
+
+bool port_t::operator<(const port_t& r) const
+{
+    return port < r.port;
+}
+
+bool ip_t::operator<(const ip_t& r) const
+{
+    return ip < r.ip;
+}
+
+counter_t& counter_t::operator++()
+{
+    ++counter;
+    return *this;
+}
 
 std::map<std::string, std::string> get_active_interfaces_ip()
 {
@@ -29,9 +41,9 @@ std::map<std::string, std::string> get_active_interfaces_ip()
     std::regex r{R"(inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))"};
     std::smatch smtch;
     std::map<std::string, std::string> active_interfaces_ip;
-    char buffer[RSIZE]{};
+    char buffer[READSIZE]{};
 
-    while (fgets(buffer, RSIZE, f))
+    while (fgets(buffer, READSIZE, f))
     {
         std::string s{buffer};
         if(std::regex_search(s, smtch, r))
@@ -54,12 +66,14 @@ ip_t str_to_ip(const std::string& ip)
 
     inet_pton(AF_INET, ip.c_str(), &(add));
 
-    return add.s_addr;
+    ip_t result;
+    result.ip = add.s_addr;
+    return result;
 }
 
 std::string ip_to_str(ip_t ip)
 {
-    in_addr add{ip};
+    in_addr add{ip.ip};
     char str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(add), str, INET_ADDRSTRLEN);
 
@@ -68,11 +82,22 @@ std::string ip_to_str(ip_t ip)
 
 port_t str_to_port(const std::string& port)
 {
-    return std::stoi(port.c_str());
+    port_t p;
+    p.port = std::stoi(port.c_str());
+    return p;
 }
 std::string port_to_str(port_t port)
 {
-    return std::to_string(port);
+    return std::to_string(port.port);
+}
+
+std::string to_string(time_t t)
+{
+    auto loct{std::localtime(&t)};
+    std::ostringstream buffer;
+    buffer << std::put_time(loct, "%c");
+
+    return buffer.str();
 }
 
 }

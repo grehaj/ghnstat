@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Utils.h"
 #include <ctime>
 #include <cstdint>
+#include <deque>
 #include <map>
 #include <string>
 #include <ostream>
-
-#include "Utils.h"
 
 namespace collector
 {
@@ -21,15 +21,13 @@ struct Socket
     bool operator<(const Socket& r) const;
 };
 
-std::ostream& operator<<(std::ostream& out, const Socket& s);
-
-struct ProtocolData
+struct Connection
 {
     Socket src;
     Socket dst;
 };
 
-std::ostream& operator<<(std::ostream& out, const ProtocolData& s);
+std::ostream& operator<<(std::ostream& out, const Connection& s);
 
 struct SocketTraffic
 {
@@ -37,17 +35,14 @@ struct SocketTraffic
     counter_t total_count;
 };
 
-std::ostream& operator<<(std::ostream& out, const SocketTraffic& s);
-
 struct PortTraffic
 {
     time_t observation_time;
     std::map<port_t, SocketTraffic> amount_per_dest_port{};
     counter_t total_count;
 
-    PortTraffic& operator+=(const ProtocolData& pt);
+    PortTraffic& operator+=(const Connection& pt);
 };
 
-std::ostream& operator<<(std::ostream& out, const PortTraffic& s);
-
+using traffic_t = std::deque<PortTraffic>;
 }

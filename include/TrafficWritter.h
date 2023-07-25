@@ -16,7 +16,7 @@ class TrafficWritter
 public:
     TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv);
 
-    void operator()(unsigned sec);
+    void operator()(utils::file_count_t max_count, bool& finished);
 
 private:
     TrafficStorage& traffic_storage;

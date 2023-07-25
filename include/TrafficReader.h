@@ -17,7 +17,7 @@ class TrafficReader
 public:
     TrafficReader(FILE* data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv);
 
-   void operator()(int sec);
+   void operator()(bool& finished);
 
 private:
     FILE* data_source{nullptr};

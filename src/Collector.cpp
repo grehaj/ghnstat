@@ -17,7 +17,7 @@ namespace collector
 
 namespace fs = std::filesystem;
 
-Collector::Collector(const char* ifc, unsigned sec): max_sec{sec}, traffic_storage{max_sec}
+Collector::Collector(const char* ifc, file_count_t mc): max_files{mc}, traffic_storage{utils::MAX_STORAGE_SIZE}
 {
     auto ifcs{utils::get_active_interfaces_ip()};
     if(ifcs.find(ifc) == ifcs.end())
@@ -47,7 +47,7 @@ void Collector::run()
 
 void Collector::prepare_filesystem() const
 {
-    const fs::path p{utils::DEFAULT_LOG_LOCATION};
+    const fs::path p{utils::LOG_LOCATION};
     if(fs::exists(p))
     {
         if(not fs::is_regular_file(p))
@@ -59,8 +59,9 @@ void Collector::run_collector_threads()
 {
     std::mutex storage_mutex;
     std::condition_variable ready_to_write;
-    std::thread reader{TrafficReader{f, traffic_storage, storage_mutex, ready_to_write}, max_sec};
-    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write}, max_sec};
+    bool finished = false;
+    std::thread reader{TrafficReader{f, traffic_storage, storage_mutex, ready_to_write}, std::ref(finished)};
+    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write}, max_files, std::ref(finished)};
     reader.join();
     writter.join();
 }

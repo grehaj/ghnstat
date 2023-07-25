@@ -5,10 +5,13 @@ project("tcpstat")
 include_directories(include)
 
 add_definitions(-std=c++17)
-set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall -ljsoncpp")
+
+find_package(nlohmann_json 3.2.0 REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -g -Wall")
 
 set(sources
    src/Collector.cpp
+   src/JsonConversion.cpp
    src/TrafficData.cpp
    src/TrafficReader.cpp
    src/TrafficStorage.cpp
@@ -17,5 +20,7 @@ set(sources
    )
 
 add_executable(tcpstat main.cpp ${sources})
+
+target_link_libraries(tcpstat PRIVATE nlohmann_json::nlohmann_json)
 
 

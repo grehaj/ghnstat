@@ -4,15 +4,12 @@
 #include <cstdint>
 #include <deque>
 
-#include <jsoncpp/json/json.h>
-
 namespace collector
 {
 
 class TrafficStorage
 {
 private:
-    using traffic_t = std::deque<PortTraffic>;
     using size_type = typename traffic_t::size_type;
 
     const size_type max_secs;
@@ -21,7 +18,7 @@ private:
 public:
     explicit TrafficStorage(size_type s);
 
-    bool update(time_t t, const ProtocolData& data);
+    bool update(time_t t, const Connection& data);
     size_type size() const
     {
         return traffic.size();

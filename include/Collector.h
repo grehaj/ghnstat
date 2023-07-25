@@ -9,7 +9,7 @@ namespace collector
 class Collector
 {
 public:
-    Collector(const char* ifc, unsigned mc);
+    Collector(const char* ifc, file_count_t fc);
     ~Collector();
     void run();
 
@@ -19,7 +19,7 @@ private:
 
     std::string interface;
     std::string ip;
-    const unsigned max_sec;
+    const file_count_t max_files;
     FILE* f{nullptr};
     TrafficStorage traffic_storage;
 };
