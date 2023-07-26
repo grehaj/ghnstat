@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project("ghstat")
+project("ghnstat")
 
 include_directories(include)
 
@@ -19,8 +19,8 @@ set(sources
    src/Utils.cpp
    )
 
-add_executable(ghstat main.cpp ${sources})
+add_executable(ghnstat main.cpp ${sources})
 
-target_link_libraries(ghstat PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(ghnstat PRIVATE nlohmann_json::nlohmann_json)
 
 
