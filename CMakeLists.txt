@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project("tcpstat")
+project("portstat")
 
 include_directories(include)
 
@@ -19,8 +19,8 @@ set(sources
    src/Utils.cpp
    )
 
-add_executable(tcpstat main.cpp ${sources})
+add_executable(portstat main.cpp ${sources})
 
-target_link_libraries(tcpstat PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(portstat PRIVATE nlohmann_json::nlohmann_json)
 
 
