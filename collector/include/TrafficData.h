@@ -5,12 +5,11 @@
 #include <cstdint>
 #include <deque>
 #include <map>
-#include <string>
 #include <ostream>
+#include <string>
 
 namespace collector
 {
-
 using namespace utils;
 
 struct Socket

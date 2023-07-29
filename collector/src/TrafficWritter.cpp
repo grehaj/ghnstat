@@ -5,11 +5,8 @@
 #include <fstream>
 #include <string>
 
-#include <iostream>
-
 namespace collector
 {
-
 namespace fs = std::filesystem;
 
 std::string get_file_name(int num)
@@ -25,7 +22,7 @@ TrafficWritter::TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition
 {
 }
 
-void TrafficWritter::operator()(utils::file_count_t max_count, bool& finished)
+void TrafficWritter::operator()(utils::file_count_t file_count, utils::storage_size_t storage_size, bool& finished)
 {
     file_count_t file_num = 1;
     fs::path file_path = fs::path{get_file_name(file_num)};
@@ -33,13 +30,12 @@ void TrafficWritter::operator()(utils::file_count_t max_count, bool& finished)
     while(true)
     {
         std::unique_lock<std::mutex> ul{storage_mtx};
-        ready_to_write.wait(ul, [&]{return traffic_storage.size() == utils::MAX_STORAGE_SIZE;});
+        ready_to_write.wait(ul, [&]{return traffic_storage.size() == storage_size;});
         std::ofstream out{file_path.string()};
         out << traffic_storage;
         traffic_storage.clear();
         ++file_num;
-        std::cout << file_num << " " << max_count << std::endl;
-        if(file_num > max_count)
+        if(file_num > file_count)
         {
             finished = true;
             return;

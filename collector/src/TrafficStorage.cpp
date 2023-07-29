@@ -1,11 +1,12 @@
-#include "TrafficStorage.h"
 #include "JsonConversion.h"
+#include "TrafficStorage.h"
 #include <iomanip>
+#include <numeric>
 
 namespace collector
 {
-
-TrafficStorage::TrafficStorage(size_type s) : max_secs{s}
+TrafficStorage::TrafficStorage(const std::string& ifc, const std::string& ip, size_type s) :
+    interface{ifc}, ip_addr{ip}, max_secs{s}
 {
 }
 
@@ -44,8 +45,15 @@ std::ostream& operator<<(std::ostream& out, const TrafficStorage& ts)
         return out;
 
     nlohmann::json j{};
-    j["stats"] = ts.traffic;
+    uint64_t init{0};
+    j["interface_ip"] = ts.ip_addr;
+    j["interface_name"] = ts.interface;
+    j["stat"] = ts.traffic;
+    j["stat_count"] = std::accumulate(ts.traffic.begin(), ts.traffic.end(), init,
+                                       [](uint64_t c, const auto& d) {return c + d.total_count.counter;});
+    j["period_start"] = utils::to_string(ts.traffic.front().observation_time);
+    j["period_length"] = ts.max_secs;
+
     return out << std::setw(2) << j << std::endl;
 }
-
 }

@@ -28,11 +28,12 @@ struct counter_t
 };
 
 using file_count_t = uint8_t;
+using storage_size_t = uint8_t;
 
 constexpr int READSIZE{1024};
-constexpr uint64_t MAX_STORAGE_SIZE{10};
-constexpr uint64_t MAX_FILE_NUM{5};
-const std::string LOG_LOCATION{"/tmp/tcpstat_%d.json"};
+constexpr storage_size_t MAX_STORAGE_SIZE{60};
+constexpr file_count_t MAX_FILE_COUNT{60};
+const std::string LOG_LOCATION{"/tmp/stat_%d.json"};
 
 ip_t str_to_ip(const std::string&);
 std::string ip_to_str(ip_t);
@@ -41,5 +42,15 @@ std::string port_to_str(port_t);
 std::map<std::string, std::string> get_active_interfaces_ip();
 
 std::string to_string(time_t t);
+
+template<typename F>
+struct fifo_deleter
+{
+    void operator ()(F* f)
+    {
+        if(f)
+            pclose(f);
+    }
+};
 }
 }

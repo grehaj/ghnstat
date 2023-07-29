@@ -4,16 +4,16 @@ namespace collector
 {
 using namespace utils;
 
-TrafficReader::TrafficReader(FILE* data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv):
+TrafficReader::TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv):
         data_source{data_src}, traffic_storage{ts}, storage_mtx{m}, ready_to_write{cv}
 {
 }
 
-void TrafficReader::operator()(bool& finished)
+void TrafficReader::operator()(utils::storage_size_t ss, bool& finished)
 {
     std::smatch sm;
     char buffer[utils::READSIZE]{};
-    while (not finished and fgets(buffer, utils::READSIZE, data_source))
+    while (not finished and fgets(buffer, utils::READSIZE, data_source.get()))
     {
         std::string s{buffer};
         if(std::regex_search(s, sm, r))
@@ -25,7 +25,7 @@ void TrafficReader::operator()(bool& finished)
                 std::lock_guard<std::mutex> lg{storage_mtx};
                 traffic_storage.update(tmime_stamp, d);
             }
-            if(traffic_storage.size() == utils::MAX_STORAGE_SIZE)
+            if(traffic_storage.size() == ss)
                 ready_to_write.notify_one();
         }
     }

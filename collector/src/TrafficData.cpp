@@ -5,7 +5,6 @@
 
 namespace collector
 {
-
 bool Socket::operator<(const Socket& r) const
 {
     if(ip.ip != r.ip.ip)
@@ -23,5 +22,4 @@ PortTraffic& PortTraffic::operator+=(const Connection& pt)
 
     return *this;
 }
-
 }

@@ -10,13 +10,12 @@
 
 namespace collector
 {
-
 class TrafficWritter
 {
 public:
     TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv);
 
-    void operator()(utils::file_count_t max_count, bool& finished);
+    void operator()(utils::file_count_t file_count, utils::storage_size_t storage_size, bool& finished);
 
 private:
     TrafficStorage& traffic_storage;
