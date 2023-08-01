@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+actor "3rd party Application" as u
+libcap as l
+package collector {
+    usecase "Collect incomming traffic statistics" as UC1
+    usecase "root credential check" as UC2
+    usecase "Throwing exception" as UC3
+    (UC2) .> (UC1) : include
+    (UC3) .> (UC2) : extends
+
+}
+u--> UC1
+l <-- UC1
+@enduml
