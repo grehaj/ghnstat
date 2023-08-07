@@ -1,0 +1,199 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#", 
+	"$id": "https://example.com/object1691242336.json", 
+	"title": "Root", 
+	"type": "object",
+	"required": [
+		"interface_ip",
+		"interface_name",
+		"period_length",
+		"period_start",
+		"stat",
+		"stat_count"
+	],
+	"properties": {
+		"interface_ip": {
+			"$id": "#root/interface_ip", 
+			"title": "Interface_ip", 
+			"type": "string",
+			"default": "",
+			"examples": [
+				"1.1.1.1"
+			],
+			"pattern": "^.*$"
+		},
+		"interface_name": {
+			"$id": "#root/interface_name", 
+			"title": "Interface_name", 
+			"type": "string",
+			"default": "",
+			"examples": [
+				"wlp2s0"
+			],
+			"pattern": "^.*$"
+		},
+		"period_length": {
+			"$id": "#root/period_length", 
+			"title": "Period_length", 
+			"type": "integer",
+			"examples": [
+				1
+			],
+			"default": 0
+		},
+		"period_start": {
+			"$id": "#root/period_start", 
+			"title": "Period_start", 
+			"type": "string",
+			"default": "",
+			"examples": [
+				"Sat Jul 29 12:55:48 2023"
+			],
+			"pattern": "^.*$"
+		},
+		"stat": {
+			"$id": "#root/stat", 
+			"title": "Stat", 
+			"type": "array",
+			"default": [],
+			"items":{
+				"$id": "#root/stat/items", 
+				"title": "Items", 
+				"type": "object",
+				"required": [
+					"ports",
+					"time",
+					"time_count"
+				],
+				"properties": {
+					"ports": {
+						"$id": "#root/stat/items/ports", 
+						"title": "Ports", 
+						"type": "array",
+						"default": [],
+						"items":{
+							"$id": "#root/stat/items/ports/items", 
+							"title": "Items", 
+							"type": "object",
+							"required": [
+								"details",
+								"port",
+								"port_count"
+							],
+							"properties": {
+								"details": {
+									"$id": "#root/stat/items/ports/items/details", 
+									"title": "Details", 
+									"type": "array",
+									"default": [],
+									"items":{
+										"$id": "#root/stat/items/ports/items/details/items", 
+										"title": "Items", 
+										"type": "object",
+										"required": [
+											"src",
+											"src_count"
+										],
+										"properties": {
+											"src": {
+												"$id": "#root/stat/items/ports/items/details/items/src", 
+												"title": "Src", 
+												"type": "object",
+												"required": [
+													"ip",
+													"port"
+												],
+												"properties": {
+													"ip": {
+														"$id": "#root/stat/items/ports/items/details/items/src/ip", 
+														"title": "Ip", 
+														"type": "string",
+														"default": "",
+														"examples": [
+															"1.1.1.1"
+														],
+														"pattern": "^.*$"
+													},
+													"port": {
+														"$id": "#root/stat/items/ports/items/details/items/src/port", 
+														"title": "Port", 
+														"type": "integer",
+														"examples": [
+															443
+														],
+														"default": 0
+													}
+												}
+											}
+,
+											"src_count": {
+												"$id": "#root/stat/items/ports/items/details/items/src_count", 
+												"title": "Src_count", 
+												"type": "integer",
+												"examples": [
+													6
+												],
+												"default": 0
+											}
+										}
+									}
+
+								},
+								"port": {
+									"$id": "#root/stat/items/ports/items/port", 
+									"title": "Port", 
+									"type": "integer",
+									"examples": [
+										37343
+									],
+									"default": 0
+								},
+								"port_count": {
+									"$id": "#root/stat/items/ports/items/port_count", 
+									"title": "Port_count", 
+									"type": "integer",
+									"examples": [
+										6
+									],
+									"default": 0
+								}
+							}
+						}
+
+					},
+					"time": {
+						"$id": "#root/stat/items/time", 
+						"title": "Time", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"Sat Jul 29 12:55:48 2023"
+						],
+						"pattern": "^.*$"
+					},
+					"time_count": {
+						"$id": "#root/stat/items/time_count", 
+						"title": "Time_count", 
+						"type": "integer",
+						"examples": [
+							6
+						],
+						"default": 0
+					}
+				}
+			}
+
+		},
+		"stat_count": {
+			"$id": "#root/stat_count", 
+			"title": "Stat_count", 
+			"type": "integer",
+			"examples": [
+				6
+			],
+			"default": 0
+		}
+	}
+}
+

@@ -9,6 +9,7 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 
 add_library(collector STATIC
    ${CMAKE_CURRENT_SOURCE_DIR}/src/Collector.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/CollectorThread.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/JsonConversion.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/TrafficData.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/src/TrafficReader.cpp

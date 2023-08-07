@@ -4,12 +4,13 @@ namespace collector
 {
 using namespace utils;
 
-TrafficReader::TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv):
-        data_source{data_src}, traffic_storage{ts}, storage_mtx{m}, ready_to_write{cv}
+TrafficReader::TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m,
+                             std::condition_variable& cv, bool& f):
+    CollectorThread{ts, m, cv, f}, data_source{data_src}
 {
 }
 
-void TrafficReader::operator()(utils::storage_size_t ss, bool& finished)
+void TrafficReader::operator()(ThreadArg threadArg)
 {
     std::smatch sm;
     char buffer[utils::READSIZE]{};
@@ -25,7 +26,7 @@ void TrafficReader::operator()(utils::storage_size_t ss, bool& finished)
                 std::lock_guard<std::mutex> lg{storage_mtx};
                 traffic_storage.update(tmime_stamp, d);
             }
-            if(traffic_storage.size() == ss)
+            if(traffic_storage.size() == threadArg.storage_size)
                 ready_to_write.notify_one();
         }
     }

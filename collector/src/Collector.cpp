@@ -15,8 +15,8 @@ namespace collector
 {
 namespace fs = std::filesystem;
 
-Collector::Collector(const std::string& ifc, file_count_t fc, storage_size_t s):
-    interface{ifc}, ip{get_interface_ip(ifc)}, file_count{fc}, storage_size{s},
+Collector::Collector(const std::string& ifc, file_count_t fc, storage_size_t s, const std::string& d):
+    interface{ifc}, ip{get_interface_ip(ifc)}, file_count{fc}, storage_size{s}, directory{d},
     traffic_storage{interface, ip, storage_size}
 {
 }
@@ -28,18 +28,7 @@ void Collector::run()
     if(f == nullptr)
         throw error::SystemCommandError{"SystemCommand: popen - tcpdump"};
 
-    prepare_filesystem();
     run_collector_threads();
-}
-
-void Collector::prepare_filesystem() const
-{
-    const fs::path p{utils::LOG_LOCATION};
-    if(fs::exists(p))
-    {
-        if(not fs::is_regular_file(p))
-            error::UsageError{p.string() + " exists but it is not a regular file."};
-    }
 }
 
 void Collector::run_collector_threads()
@@ -47,8 +36,9 @@ void Collector::run_collector_threads()
     std::mutex storage_mutex;
     std::condition_variable ready_to_write;
     bool finished = false;
-    std::thread reader{TrafficReader{f, traffic_storage, storage_mutex, ready_to_write}, storage_size, std::ref(finished)};
-    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write}, file_count, storage_size, std::ref(finished)};
+    ThreadArg threadArg{file_count, storage_size, directory};
+    std::thread reader{TrafficReader{f, traffic_storage, storage_mutex, ready_to_write, finished}, threadArg};
+    std::thread writter{TrafficWritter{traffic_storage, storage_mutex, ready_to_write, finished}, threadArg};
     reader.join();
     writter.join();
 }

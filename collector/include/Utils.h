@@ -33,7 +33,8 @@ using storage_size_t = uint8_t;
 constexpr int READSIZE{1024};
 constexpr storage_size_t MAX_STORAGE_SIZE{60};
 constexpr file_count_t MAX_FILE_COUNT{60};
-const std::string LOG_LOCATION{"/tmp/stat_%d.json"};
+const std::string LOG_TEMPLATE{"stat_%d.json"};
+const std::string DEFAULT_LOG_LOCATION{"/tmp/stat_%d.json"};
 
 ip_t str_to_ip(const std::string&);
 std::string ip_to_str(ip_t);
