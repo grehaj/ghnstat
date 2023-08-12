@@ -1,0 +1,69 @@
+@startuml
+
+namespace collector {
+
+class CollectorThread
+{
++CollectorThread(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++{abstract} ~CollectorThread()
++{abstract} void operator()(ThreadArg threadArg)
+#TrafficStorage& traffic_storage
+#std::mutex& storage_mtx
+#std::condition_variable& ready
+#bool& finished
+}
+
+class TrafficReader
+{
++<<constructor>> TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++void operator()(ThreadArg threadArg)
+-std::shared_ptr<FILE> data_source
+-{static} std::regex tcpdump_regex
+}
+
+class TrafficWritter
+{
++<<constructor>> TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++void operator()(ThreadArg threadArg)
+}
+
+CollectorThread <|--- TrafficReader
+CollectorThread <|--- TrafficWritter
+
+Collector ..> TrafficReader
+Collector ..> TrafficWritter
+
+class Collector {
++<<constructor>> Collector(const std::string& ifc, file_count_t fc, storage_size_t s)
++void run()
+-void run_collector_threads()
+-std::string get_interface_ip(const std::string& ifc) const
+-const std::string interface
+-const std::string ip
+-const file_count_t file_count
+-const storage_size_t storage_size
+-const std::string& directory
+-std::shared_ptr<FILE> f
+}
+
+class TrafficStorage
+{
++<<constructor>> TrafficStorage(const std::string ifc, const std::string ip, size_type s);
++bool update(time_t t sec, const Connection& data)
++size_type size()
++void clear()
+-std::string interface;
+-std::string ip_addr;
+-size_type max_secs;
+-traffic_t traffic
+}
+
+note right of TrafficStorage
+using size_type = typename traffic_t::size_type
+end note
+
+Collector -- TrafficStorage : -trafficStorage
+
+}
+
+@enduml

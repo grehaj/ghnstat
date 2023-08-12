@@ -1,0 +1,73 @@
+@startuml
+
+namespace collector {
+
+namespace utils {
+
+struct port_t
+{
+uint16_t port
+bool operator<(const port_t& r)
+}
+
+struct ip_t
+{
+uint32_t ip
+bool operator<(const ip_t& r)
+}
+
+struct counter_t
+{
+uint64_t counter
+counter_t operator++()
+}
+
+note "using file_count_t = uint8_t\nusing storage_size_t = uint8_t" as N1
+}
+
+struct Socket
+{
+ip_t ip
+port_t port
+bool operator<(const Socket& r)
+}
+
+struct Connection
+{
+Socket src
+Socket dst
+}
+
+struct SocketTraffic
+{
+std::map<Socket, counter_t> per_socket_count
+counter_t total_count
+}
+
+struct PortTraffic
+{
+time_t observation_time
+std::map<port_t, SocketTraffic> amount_per_dest_port
+counter_t total_count;
+PortTraffic operator+=(const Connection pt)
+}
+
+struct traffic_t
+{
+std::deque<PortTraffic>
+}
+
+note right of traffic_t
+Actually it is an using statement
+end note
+
+struct ThreadArg
+{
+utils::file_count_t file_count
+utils::storage_size_t storage_size
+std::string directory
+}
+
+}
+
+@enduml

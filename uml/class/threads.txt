@@ -1,0 +1,53 @@
+@startuml
+
+namespace collector {
+
+struct ThreadArg
+{
+utils::file_count_t file_count
+utils::storage_size_t storage_size
+std::string directory
+}
+
+class CollectorThread
+{
++CollectorThread(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++{abstract} ~CollectorThread()
++{abstract} void operator()(ThreadArg threadArg)
+#TrafficStorage& traffic_storage
+#std::mutex& storage_mtx
+#std::condition_variable& ready
+#bool& finished
+}
+
+class TrafficReader
+{
++<<constructor>> TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++void operator()(ThreadArg threadArg)
+-std::shared_ptr<FILE> data_source
+-{static} std::regex tcpdump_regex
+}
+
+class TrafficWritter
+{
++<<constructor>> TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f)
++void operator()(ThreadArg threadArg)
+}
+
+CollectorThread <|--- TrafficReader
+CollectorThread <|--- TrafficWritter
+
+Collector ..> TrafficReader
+Collector ..> TrafficWritter
+
+class Collector
+{
+}
+
+Collector -- TrafficStorage : -trafficStorage
+TrafficReader -- TrafficStorage : > has
+TrafficWritter -- TrafficStorage : > has
+
+}
+
+@enduml

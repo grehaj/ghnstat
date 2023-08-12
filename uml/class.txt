@@ -1,8 +1,0 @@
-@startuml
-
-class Collector {
-+<<constructor>> Collector(const std::string& ifc, file_count_t fc, storage_size_t s)
-+void run()
-}
-
-@enduml

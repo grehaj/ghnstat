@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CollectorThread.h"
-#include "Exceptions.h"
 #include "TrafficStorage.h"
 #include "Utils.h"
 #include <condition_variable>

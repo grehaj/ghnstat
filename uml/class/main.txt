@@ -1,0 +1,36 @@
+@startuml
+
+namespace collector {
+
+class CollectorThread
+{
+}
+
+class TrafficReader
+{
+}
+
+class TrafficWritter
+{
+}
+
+CollectorThread <|--- TrafficReader
+CollectorThread <|--- TrafficWritter
+
+Collector ..> TrafficReader
+Collector ..> TrafficWritter
+
+class Collector {
+}
+
+class TrafficStorage
+{
+}
+
+Collector -- TrafficStorage : -trafficStorage
+TrafficReader -- TrafficStorage : > has
+TrafficWritter -- TrafficStorage : > has
+
+}
+
+@enduml

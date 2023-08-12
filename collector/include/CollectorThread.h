@@ -14,17 +14,12 @@ struct ThreadArg
     std::string directory;
 };
 
-class CollectorThreadInterface
-{
-public:
-    virtual ~CollectorThreadInterface() = default;
-    virtual void operator()(ThreadArg threadArg) = 0;
-};
-
-class CollectorThread : public CollectorThreadInterface
+class CollectorThread
 {
 public:
     CollectorThread(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f);
+    virtual ~CollectorThread() = default;
+    virtual void operator()(ThreadArg threadArg) = 0;
 
 protected:
     TrafficStorage& traffic_storage;

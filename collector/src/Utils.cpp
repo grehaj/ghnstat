@@ -1,5 +1,4 @@
 #include "Utils.h"
-#include "Exceptions.h"
 #include <algorithm>
 #include <arpa/inet.h>
 #include <iomanip>
@@ -35,7 +34,7 @@ std::map<std::string, std::string> get_active_interfaces_ip()
 {
     FILE* f = popen("ip -4 addr", "r");
     if(f == nullptr)
-        throw error::SystemCommandError{"SystemCommand: popen - ip addr"};
+        throw std::runtime_error{"SystemCommand: popen - ip addr"};
 
     std::regex r{R"(inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))"};
     std::smatch smtch;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Exceptions.h"
 #include "CollectorThread.h"
 #include "TrafficStorage.h"
 #include "Utils.h"

@@ -1,0 +1,44 @@
+@startuml
+
+namespace collector {
+
+class CollectorThread
+{
+}
+
+class TrafficReader
+{
+}
+
+class TrafficWritter
+{
+}
+
+CollectorThread <|--- TrafficReader
+CollectorThread <|--- TrafficWritter
+
+Collector ..> TrafficReader
+Collector ..> TrafficWritter
+
+class Collector {
++<<constructor>> Collector(std::string ifc, file_count_t fc, storage_size_t s)
++void run()
+-void run_collector_threads()
+-std::string get_interface_ip(const std::string& ifc) const
+-const std::string interface
+-const std::string ip
+-const file_count_t file_count
+-const storage_size_t storage_size
+-const std::string& directory
+-std::shared_ptr<FILE> f
+}
+
+class TrafficStorage
+{
+}
+
+Collector -- TrafficStorage : -trafficStorage
+
+}
+
+@enduml

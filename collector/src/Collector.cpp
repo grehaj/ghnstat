@@ -1,5 +1,4 @@
 #include "Collector.h"
-#include "Exceptions.h"
 #include "TrafficReader.h"
 #include "TrafficStorage.h"
 #include "TrafficWritter.h"
@@ -26,7 +25,7 @@ void Collector::run()
     const std::string tcp_dump_command = std::string{"tcpdump -n -tt -i "} + interface + " dst " + ip;
     f = std::shared_ptr<FILE>(popen(tcp_dump_command.c_str(), "r"), utils::fifo_deleter<FILE>());
     if(f == nullptr)
-        throw error::SystemCommandError{"SystemCommand: popen - tcpdump"};
+        throw std::runtime_error{"SystemCommand: popen - tcpdump"};
 
     run_collector_threads();
 }
@@ -47,7 +46,7 @@ std::string Collector::get_interface_ip(const std::string& ifc) const
 {
     auto ifcs{utils::get_active_interfaces_ip()};
     if(ifcs.find(ifc) == ifcs.end())
-        throw error::UsageError{"Unable to find interface '" + ifc + "'."};
+        throw std::runtime_error{"Unable to find interface '" + ifc + "'."};
 
     return ifcs[ifc];
 }
