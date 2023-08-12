@@ -1,0 +1,24 @@
+@startuml
+
+participant TrafficReader
+participant TrafficStorage
+participant TrafficWritter
+activate TrafficWritter
+
+TrafficWritter -> TrafficWritter: operator()()
+TrafficWritter -> TrafficWritter: run()
+
+loop true
+    TrafficWritter -> TrafficStorage: operator<<(std::fstream: next_file)
+    TrafficStorage --> TrafficWritter
+    TrafficWritter -> TrafficStorage: clear
+    TrafficStorage --> TrafficWritter
+    break maximum number of files generated
+        TrafficWritter -> TrafficWritter: finish = true
+    end
+    TrafficWritter --> TrafficReader: done
+end
+
+deactivate TrafficWritter
+
+@enduml

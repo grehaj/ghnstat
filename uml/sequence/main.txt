@@ -1,0 +1,56 @@
+@startuml
+
+participant "CLI user" as User
+
+User -> ghnstat: main(argc, argv)
+activate ghnstat
+
+alt argv are valid
+    ghnstat -> Collector: << create >>
+    activate Collector
+
+    ghnstat -> Collector: run
+
+    Collector -> TrafficStorage: << create >>
+    activate TrafficStorage
+
+    Collector -> TrafficReader: << create >>
+    activate TrafficReader
+    Collector -> TrafficReader: join()
+    activate Collector #DarkSalmon
+
+    Collector -> TrafficWritter: << create >>
+    activate TrafficWritter
+    Collector -> TrafficWritter: join()
+    activate Collector #Salmon
+
+    loop file_num times
+        ref over TrafficReader, TrafficStorage
+            Read traffic
+        end
+        TrafficReader -> TrafficWritter : notify
+        ref over TrafficWritter, TrafficStorage
+            Write Traffic
+        end
+        TrafficWritter --> TrafficReader : done
+    end
+
+    TrafficWritter --> Collector
+    destroy TrafficWritter
+    deactivate Collector
+
+    TrafficReader --> Collector
+    destroy TrafficReader
+    deactivate Collector
+
+    Collector --> ghnstat
+    destroy TrafficStorage
+    destroy Collector
+    ghnstat --> User
+else invalid or missing arguments
+ghnstat -> ghnstat: usage()
+ghnstat --> User
+end
+
+deactivate ghnstat
+@enduml

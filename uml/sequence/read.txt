@@ -1,0 +1,30 @@
+@startuml
+
+participant TrafficReader
+activate TrafficReader
+participant TrafficStorage
+participant TrafficWritter
+
+TrafficReader -> TrafficReader: operator()()
+TrafficReader -> TrafficReader: run()
+TrafficReader -> TrafficReader: f = popen(cmd="tcpdump")
+TrafficReader -> tcpdump: << create >>
+activate tcpdump
+opt f != nullptr
+    TrafficReader -> tcpdump
+    loop status = fgets()
+        alt status != 0 and finished != true
+            TrafficReader -> TrafficStorage: update()
+            TrafficStorage --> TrafficReader
+            TrafficReader -> TrafficStorage: s = size()
+            TrafficStorage --> TrafficReader
+            opt s == secs
+                TrafficReader -> TrafficWritter: notify()
+            end
+        end
+    end
+end
+
+deactivate TrafficReader
+
+@enduml

@@ -20,7 +20,7 @@ private:
     const std::string ip;
     const file_count_t file_count;
     const storage_size_t storage_size;
-    const std::string& directory;
+    const std::string directory;
 
     TrafficStorage traffic_storage;
 };

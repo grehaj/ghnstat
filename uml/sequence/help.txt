@@ -1,0 +1,12 @@
+@startuml
+
+participant "CLI user" as User
+
+User -> ghnstat: main(args)
+activate ghnstat
+
+ghnstat -> ghnstat: usage()
+ghnstat --> User
+
+deactivate ghnstat
+@enduml
