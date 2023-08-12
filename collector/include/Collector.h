@@ -14,7 +14,6 @@ public:
     void run();
 
 private:
-    void run_collector_threads();
     std::string get_interface_ip(const std::string& ifc) const;
 
     const std::string interface;
@@ -23,7 +22,6 @@ private:
     const storage_size_t storage_size;
     const std::string& directory;
 
-    std::shared_ptr<FILE> f;
     TrafficStorage traffic_storage;
 };
 }

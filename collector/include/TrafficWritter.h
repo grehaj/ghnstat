@@ -13,8 +13,9 @@ namespace collector
 class TrafficWritter : public CollectorThread
 {
 public:
-    TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f);
+    TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv,
+                   bool& finished, std::exception_ptr& err);
 
-    void operator()(ThreadArg threadArg) override;
+   void run(ThreadArg threadArg) override;
 };
 }

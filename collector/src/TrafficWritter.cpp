@@ -23,12 +23,13 @@ std::string get_file_name(int num, const std::string& directory)
     return std::string{buffer};
 }
 
-TrafficWritter::TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f):
-    CollectorThread{ts, m, cv, f}
+TrafficWritter::TrafficWritter(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv,
+                               bool& finished, std::exception_ptr& error):
+    CollectorThread{ts, m, cv, finished, error}
 {
 }
 
-void TrafficWritter::operator()(ThreadArg threadArg)
+void TrafficWritter::run(ThreadArg threadArg)
 {
     file_count_t file_num = 1;
     fs::path file_path = fs::path{get_file_name(file_num, threadArg.directory)};

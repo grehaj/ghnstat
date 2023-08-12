@@ -16,12 +16,10 @@ using namespace utils;
 class TrafficReader : public CollectorThread
 {
 public:
-    TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m, std::condition_variable& cv, bool& f);
+    TrafficReader(TrafficStorage& ts, std::mutex& m, std::condition_variable& cv,
+                  bool& finished, std::exception_ptr& err);
 
-   void operator()(ThreadArg threadArg) override;
-
-private:
-    std::shared_ptr<FILE> data_source;
+   void run(ThreadArg threadArg) override;
 
     inline static const std::regex r{
         R"((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+)\s>\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\.(\d+))"};

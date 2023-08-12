@@ -4,17 +4,22 @@ namespace collector
 {
 using namespace utils;
 
-TrafficReader::TrafficReader(std::shared_ptr<FILE> data_src, TrafficStorage& ts, std::mutex& m,
-                             std::condition_variable& cv, bool& f):
-    CollectorThread{ts, m, cv, f}, data_source{data_src}
+TrafficReader::TrafficReader(TrafficStorage& ts, std::mutex& m,
+                             std::condition_variable& cv, bool& finished, std::exception_ptr& error):
+    CollectorThread{ts, m, cv, finished, error}
 {
 }
 
-void TrafficReader::operator()(ThreadArg threadArg)
+void TrafficReader::run(ThreadArg threadArg)
 {
+    const std::string tcp_dump_command = std::string{
+            "tcpdump -n -tt -i "} + threadArg.interface_name + " dst " + threadArg.interface_ip;
+    std::shared_ptr<FILE> f = std::shared_ptr<FILE>(popen(tcp_dump_command.c_str(), "r"), utils::fifo_deleter<FILE>());
+    if(f == nullptr)
+        throw std::runtime_error{"SystemCommand: popen - tcpdump"};
     std::smatch sm;
     char buffer[utils::READSIZE]{};
-    while (not finished and fgets(buffer, utils::READSIZE, data_source.get()))
+    while (not finished and fgets(buffer, utils::READSIZE, f.get()))
     {
         std::string s{buffer};
         if(std::regex_search(s, sm, r))
@@ -30,5 +35,5 @@ void TrafficReader::operator()(ThreadArg threadArg)
                 ready_to_write.notify_one();
         }
     }
-   }
+}
 }
