@@ -1,6 +1,6 @@
 {
   "interface_ip": "1.1.1.1",
-  "interface_name": 1,
+  "interface_name": "eth0",
   "period_length": 1,
   "period_start": "Sat Jul 29 12:55:48 2023",
   "stat": [
