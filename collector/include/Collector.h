@@ -10,7 +10,8 @@ namespace collector
 class Collector
 {
 public:
-    Collector(const std::string& ifc, file_count_t fc, storage_size_t s, const std::string& d="");
+    Collector(const std::string& interface, file_count_t file_count,
+              storage_size_t storage_size, const std::string& directory="");
     void run();
 
 private:

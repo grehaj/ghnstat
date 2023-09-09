@@ -14,7 +14,8 @@ void TrafficReader::run(ThreadArg threadArg)
 {
     const std::string tcp_dump_command = std::string{
             "tcpdump -n -tt -i "} + threadArg.interface_name + " dst " + threadArg.interface_ip;
-    std::shared_ptr<FILE> f = std::shared_ptr<FILE>(popen(tcp_dump_command.c_str(), "r"), utils::fifo_deleter<FILE>());
+    using del_t = decltype (fifo_deleter<FILE>());
+    auto f = std::unique_ptr<FILE, del_t>(popen(tcp_dump_command.c_str(), "r"), utils::fifo_deleter<FILE>());
     if(f == nullptr)
         throw std::runtime_error{"SystemCommand: popen - tcpdump"};
     std::smatch sm;

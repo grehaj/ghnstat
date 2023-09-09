@@ -2,7 +2,7 @@
 left to right direction
 actor "CLI user" as u
 tcpdump as l
-package ghstat {
+package ghnstat {
     usecase "Collect incomming traffic statistics" as UC1
     usecase "Ask for help" as UC3
     usecase "Generate usage" as UC4

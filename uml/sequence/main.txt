@@ -9,39 +9,31 @@ alt argv are valid
     ghnstat -> Collector: << create >>
     activate Collector
 
-    ghnstat -> Collector: run
+    ghnstat -> Collector: run()
 
     Collector -> TrafficStorage: << create >>
     activate TrafficStorage
 
     Collector -> TrafficReader: << create >>
     activate TrafficReader
-    Collector -> TrafficReader: join()
-    activate Collector #DarkSalmon
 
     Collector -> TrafficWritter: << create >>
     activate TrafficWritter
-    Collector -> TrafficWritter: join()
-    activate Collector #Salmon
 
     loop file_num times
         ref over TrafficReader, TrafficStorage
             Read traffic
         end
-        TrafficReader -> TrafficWritter : notify
         ref over TrafficWritter, TrafficStorage
             Write Traffic
         end
-        TrafficWritter --> TrafficReader : done
     end
 
     TrafficWritter --> Collector
     destroy TrafficWritter
-    deactivate Collector
 
     TrafficReader --> Collector
     destroy TrafficReader
-    deactivate Collector
 
     Collector --> ghnstat
     destroy TrafficStorage
